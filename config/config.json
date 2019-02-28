@@ -3,7 +3,9 @@
          "PORT": 3000
     },
     "development": {
-         "PORT": 3000
+        "PORT": 3000,
+        "JWT_SECRET": "to_be_replaced",
+        "JWT_ISSUER": "project-thing"
     },
     "development-cloud": {
          "PORT": 3000
