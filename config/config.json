@@ -1,0 +1,15 @@
+{
+    "production": {
+         "PORT": 3000
+    },
+    "development": {
+         "PORT": 3000
+    },
+    "development-cloud": {
+         "PORT": 3000
+    },
+
+    "test": {
+         "PORT": 3000
+    }
+}

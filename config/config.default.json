@@ -1,0 +1,18 @@
+{
+    "APPLICATION_NAME":"",
+    "APPLICATION_VERSION":"", 
+    "PORT": 3000, 
+    "DATABASE_NAME": "database_name", 
+    "DATABASE_USER": "database_user", 
+    "DATABASE_PASS": "database_password", 
+    "DATABASE_HOST": "database_host",
+    "DATABASE_PORT": 5423,
+    "DATABASE_LOGGING": false,
+    "LOGGING_FILE": "./run.log",
+    "LOGGING_TRANSPORT_CONSOLE": true,
+    "LOGGING_TRANSPORT_FILE": true,
+    "LOGGING_LEVEL": "debug",
+    "JWT_SECRET":"", 
+    "ROUTE_PREFIX": "",
+    "INSTITUTE_NAME": ""
+}
