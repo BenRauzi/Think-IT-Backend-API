@@ -1,17 +1,38 @@
 import "reflect-metadata"; // this shim is required
-import {createExpressServer} from "routing-controllers";
+import {createExpressServer, useExpressServer} from "routing-controllers";
 import * as Controllers from "./controllers"
 import * as cors from 'cors';
+import * as circular_json from 'circular-json'
+import { sign, verify, TokenExpiredError } from 'jsonwebtoken';
 
-// creates express app, registers all controller routes and returns you express app instance
+declare const JWT_SECRET;
 const app = createExpressServer({
 controllers: Object.values(Controllers) // we specify controllers we want to use
 });
+    
+app.use(cors({
+    origin: 'http://localhost:4200'
+}));
+    
+useExpressServer(app, {
+    // controllers: Object.values(Controllers)
+});
+    
+app.get('/test',cors(), (req, res, next) => {
+    res.json({ msg: 'coolio!'});
+});
 
-app.use(cors());
-
-
+app.post('/api/verify', cors(), (req, res, next) => {
+    try{
+        const verified = verify(req.headers.authorization, JWT_SECRET);
+    }
+    catch(TokenExpiredError){
+        res.json({verified: false, msg: "Sent!"});
+        return;
+    }
+    res.json({verified: true, msg: "Sent!"});
+})
 // run express application on port 3000
-app.listen(3000, () => {
-    console.log("Server started!");
+const server = app.listen(3000, () => {
+    console.log("Server started on port " + server.address().port);
 });
