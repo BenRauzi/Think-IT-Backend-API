@@ -1,6 +1,8 @@
 {
     "production": {
-         "PORT": 3000
+        "PORT": 3000,
+        "JWT_SECRET": "to_be_replaced",
+        "JWT_ISSUER": "project-thing"
     },
     "development": {
         "PORT": 3000,
