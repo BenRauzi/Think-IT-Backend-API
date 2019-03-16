@@ -4,8 +4,11 @@ import * as Controllers from "./controllers"
 import * as cors from 'cors';
 import * as circular_json from 'circular-json'
 import { sign, verify, TokenExpiredError } from 'jsonwebtoken';
+import { UserDto } from './dto';
 import * as bodyParser from 'body-parser';
-
+import * as sql from 'mssql';
+import * as uuid from 'uuid/v4';
+import { response } from '../node_modules/@types/express';
 
 declare const JWT_SECRET;
 const app = createExpressServer({
@@ -28,7 +31,17 @@ app.get('/ping',cors(), (req, res, next) => {
 });
 
 app.get('/api/users', cors(), (req, res, next) => {
-    res.json([{firstName:"John", lastName: "Smith"},{firstName:"Jo", lastName:"Doe"}]);
+    var request = new sql.Request();
+    // query to the database and get the records
+    request.query('select * from Users', function (err, recordset) {
+        
+        if (err) console.log(err)
+
+        // send records as a response
+        res.send(recordset);
+        
+    });
+
 })
 app.post('/api/verify', cors(), (req, res, next) => {
     try{
@@ -42,20 +55,61 @@ app.post('/api/verify', cors(), (req, res, next) => {
 });
 
 app.post('/api/login', cors(), (req, res, next) => {
-    const email = req.body.email;
+    const username = req.body.username;
     const password = req.body.password;
-    // DATABASE CALL, GET USERID
-    const userId = "0800838383" //returned userId from database call
-    if(true){ //if user does exist
-        const token = sign({userId: userId}, JWT_SECRET, {expiresIn: "300 seconds"}); //change expiresIn
-        res.status(200);
-        res.json({ token: token });
-    }
-    else{
-        res.status(401);
-    }
+    let request = new sql.Request();
+    request.query(`select * from Users where Username = '${username}'`, function(err, recordset){
+        if(err) console.log(err);
+        const recordsets: Array<UserDto> = recordset
+        if(recordset.rowsAffected[0] !== 0){
+            // res.send(recordset.recordset[0]);
+            if(recordset.recordset[0]["Password"].trim() === password){
+                const userID = recordset.recordset[0]["UserID"];
+                const jwtToken = sign({userId: userID}, JWT_SECRET, {expiresIn: "300 seconds"});
+                res.json({ token: jwtToken });
+            }
+            else{
+                res.send({msg: "Password incorrect"});
+            }
+        }
+        else{
+            res.send({msg: "User not found!"});
+        }
+    });
+});
+
+app.post('/api/register', cors(), (req, res, next) => {
+    const username = req.body.username;
+    const name = req.body.name;
+    const password = req.body.password;
+    const role = req.body.role;
+    const userId = uuid();
+    let request = new sql.Request();
+    request.query(`select * from Users where Username = ${username}`, function(err, recordset){
+        if(err) console.log(err);
+
+        if(recordset.rowsAffected[0] === 0){
+            request.query(`insert into Users ("Username", "Name", "Password", "AccountType", "UserID") values ('${username}', '${name}', '${password}', '${role}', '${userId}');`, function(err, result) {
+                if(err) console.log(err);
+        
+                res.send(result);
+            });
+        }
+        else{
+            res.json({msg: 'User already exists!'});
+        }
+    });
 });
 // run express application on port 3000
 const server = app.listen(3000, () => {
     console.log("Server started on port " + server.address().port);
+    var config = {
+        user: 'root',
+        password: 'Oofman1',
+        server: '104.153.109.42',
+        database: 'Project Thing'
+    }
+    sql.connect(config, function (err) {
+        if (err) console.log(err);
+    });
 });
