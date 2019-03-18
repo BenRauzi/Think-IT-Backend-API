@@ -8,7 +8,8 @@ import { UserDto } from './dto';
 import * as bodyParser from 'body-parser';
 import * as sql from 'mssql';
 import * as uuid from 'uuid/v4';
-import { response } from '../node_modules/@types/express';
+import { response } from 'express';
+import { TokenService } from './services';
 
 declare const JWT_SECRET;
 const app = createExpressServer({
@@ -62,7 +63,6 @@ app.post('/api/login', cors(), (req, res, next) => {
         if(err) console.log(err);
         const recordsets: Array<UserDto> = recordset
         if(recordset.rowsAffected[0] !== 0){
-            // res.send(recordset.recordset[0]);
             if(recordset.recordset[0]["Password"].trim() === password){
                 const userID = recordset.recordset[0]["UserID"];
                 const jwtToken = sign({userId: userID}, JWT_SECRET, {expiresIn: "300 seconds"});
@@ -100,6 +100,19 @@ app.post('/api/register', cors(), (req, res, next) => {
         }
     });
 });
+
+app.post('/api/authenticate', cors(), (req, res, next) => {
+    const token = req.body.token;
+    try{
+        verify(token, JWT_SECRET);
+    }
+    catch(TokenExpiredError){
+        res.json({msg: "Token Expired"});
+        return;
+    }
+    res.json({msg: "Token Cleared"});
+});
+
 // run express application on port 3000
 const server = app.listen(3000, () => {
     console.log("Server started on port " + server.address().port);
