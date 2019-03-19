@@ -65,8 +65,9 @@ app.post('/api/login', cors(), (req, res, next) => {
         if(recordset.rowsAffected[0] !== 0){
             if(recordset.recordset[0]["Password"].trim() === password){
                 const userID = recordset.recordset[0]["UserID"];
+                const role = recordset.recordset[0]["AccountType"];
                 const jwtToken = sign({userId: userID}, JWT_SECRET, {expiresIn: "300 seconds"});
-                res.json({ token: jwtToken });
+                res.json({ token: jwtToken, user: { role: role }});
             }
             else{
                 res.send({msg: "Password incorrect"});
@@ -85,9 +86,8 @@ app.post('/api/register', cors(), (req, res, next) => {
     const role = req.body.role;
     const userId = uuid();
     let request = new sql.Request();
-    request.query(`select * from Users where Username = ${username}`, function(err, recordset){
+    request.query(`select * from Users where Username = '${username}'`, function(err, recordset){
         if(err) console.log(err);
-
         if(recordset.rowsAffected[0] === 0){
             request.query(`insert into Users ("Username", "Name", "Password", "AccountType", "UserID") values ('${username}', '${name}', '${password}', '${role}', '${userId}');`, function(err, result) {
                 if(err) console.log(err);
