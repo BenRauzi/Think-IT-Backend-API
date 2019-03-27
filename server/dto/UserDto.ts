@@ -1,7 +1,7 @@
 export class UserDto{
-    Username: String;
-    Name: String;
-    Password: String;
-    AccountType: String;
-    UserID: String;
+    Username: string;
+    Name: string;
+    Password: string;
+    AccountType: string;
+    UserID: string;
 }
