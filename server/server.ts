@@ -144,6 +144,12 @@ app.get('/api/notices', cors(), (req, res, next) => {
     });
 });
 
+app.get('/api/getuser', cors(), async (req, res) => {
+    const token = req.headers.authorization;
+    const user = await getUser(token);
+    res.json({role: user.AccountType});
+});
+
 function isExpired(token): boolean {
     try {
         verify(token, JWT_SECRET);
