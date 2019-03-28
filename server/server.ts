@@ -130,6 +130,8 @@ app.post('/api/notices', cors(), async (req, res, next) => {
 
                 res.send(result);
             });
+        } else {
+            res.send(401);
         }
     }
 });
@@ -138,7 +140,7 @@ app.get('/api/notices', cors(), (req, res, next) => {
     const request = new sql.Request();
     request.query(`select * from Notices`, (err, result) => {
         if (err) { console.log(err) }
-        res.json({notices: result.recordset});
+        res.send(result.recordset);
     });
 });
 
