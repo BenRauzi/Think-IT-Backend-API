@@ -59,11 +59,9 @@ app.post('/api/verify', cors(), (req, res, next) => {
 app.post('/api/login', cors(), (req, res, next) => {
     const username = req.body.username;
     const password = req.body.password;
-    console.log(new sql.Request());
     const request = new sql.Request();
     request.query(`select * from Users where Username = '${username}'`, function(err, recordset) {
         if (err) { console.log(err); }
-        console.log(recordset);
         const recordsets: Array<UserDto> = recordset;
         if (recordset.rowsAffected[0] !== 0) {
             if (recordset.recordset[0].Password.trim() === password) {
