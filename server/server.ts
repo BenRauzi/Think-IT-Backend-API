@@ -93,12 +93,22 @@ app.post('/api/register', cors(), (req, res, next) => {
             request.query(`insert into Users ("Username", "Name", "Password", "AccountType", "UserID") values ('${username}', '${name}', '${password}', '${role}', '${userId}');`, function(err, result) {
                 if (err) { console.log(err); }
 
-                res.send(result);
+                if (role === 'Student') {
+                    const request2 = new sql.Request();
+                    request2.query(`insert into StudentDetails ("UUID") values ('${userId}')`, function(err, result){
+                        if (err) { console.log(err); }
+
+                        res.send(result);
+                    });
+                } else {
+                    res.send(result);
+                }
             });
         } else {
             res.json({msg: 'User already exists!'});
         }
     });
+    
 });
 
 app.post('/api/authenticate', cors(), (req, res, next) => {
