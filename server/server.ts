@@ -4,7 +4,7 @@ import * as Controllers from './controllers';
 import * as cors from 'cors';
 import * as circular_json from 'circular-json';
 import { sign, verify, TokenExpiredError } from 'jsonwebtoken';
-import { UserDto } from './dto';
+import { UserDto, Student } from './dto';
 import * as bodyParser from 'body-parser';
 import * as sql from 'mssql';
 import * as uuid from 'uuid/v4';
@@ -95,10 +95,10 @@ app.post('/api/register', cors(), (req, res, next) => {
 
                 if (role === 'Student') {
                     const request2 = new sql.Request();
-                    request2.query(`insert into StudentDetails ("UUID") values ('${userId}')`, function(err, result){
-                        if (err) { console.log(err); }
+                    request2.query(`insert into StudentDetails ("UUID") values ('${userId}')`, function(err2, result2){
+                        if (err2) { console.log(err2); }
 
-                        res.send(result);
+                        res.send(result2);
                     });
                 } else {
                     res.send(result);
@@ -158,6 +158,59 @@ app.get('/api/getuser', cors(), async (req, res) => {
     const token = req.headers.authorization;
     const user = await getUser(token);
     res.json({role: user.AccountType});
+});
+
+app.get('/api/student/names', cors(), async (req, res) => {
+    const authToken = req.headers.authorization;
+    if(!isExpired(authToken)){
+        if(await isPermitted(authToken, 'Administrator')){
+            const request = new sql.Request();
+            request.query(`SELECT Name, UserID FROM Users WHERE AccountType = 'Student'`, (err, result) => {
+                if(err){ console.log(err) }
+                res.send(result.recordset);
+            })
+        }
+    }
+    else{
+        res.send(401);
+    }
+});
+
+app.post('/api/student/details', cors(), async (req, res) => {
+    const authToken = req.headers.authorization;
+    const userId = req.body.userId;
+    if(!isExpired(authToken)){
+        if(await isPermitted(authToken, 'Administrator')){
+            const request = new sql.Request();
+            request.query(`select * from StudentDetails WHERE UUID = '${userId}'`, (err, result) => {
+                if(err){ console.log(err)}
+                res.send(result.recordset[0]);
+            });
+        }
+    }
+    else{
+        res.send(401);
+    }
+});
+
+app.put('/api/student/details', cors(), async(req, res) => {
+    const authToken = req.headers.authorization;
+    let student: Student;
+    student = req.body;
+    const userId = student.UUID;
+    if(!isExpired(authToken)){
+        if(await isPermitted(authToken, 'Administrator')) {
+            const request = new sql.Request();
+            // tslint:disable-next-line: max-line-length
+            request.query(`update StudentDetails set FirstName = '${student.FirstName}', ForeNames = '${student.ForeNames}', LastName = '${student.LastName}', DateOfBirth = '${student.DateOfBirth}', NSN = '${student.NSN}', HomePhone = '${student.HomePhone}', PhysicalUnitNo = '${student.PhysicalUnitNo}', PhysicalNumber = '${student.PhysicalNumber}', PhysicalStreet = '${student.PhysicalStreet}', PhysicalRuralDelivery = '${student.PhysicalRuralDelivery}', PhysicalSuburb = '${student.PhysicalSuburb}', PhysicalPostcode = '${student.PhysicalPostcode}', PostalUnitNo = '${student.PostalUnitNo}', PostalNumber = '${student.PostalNumber}', PostalStreet = '${student.PostalStreet}', PostalRuralDelivery = '${student.PostalRuralDelivery}', PostalSuburb = '${student.PostalSuburb}', PostalPostcode = '${student.PostalPostcode}', CaregiverOneRelationship = '${student.CaregiverOneRelationship}', CaregiverOneName = '${student.CaregiverOneName}', CaregiverOneAddress = '${student.CaregiverOneAddress}', CaregiverOneHomePhone = '${student.CaregiverOneHomePhone}', CaregiverOneMobilePhone = '${student.CaregiverOneMobilePhone}', CaregiverOneOccupation = '${student.CaregiverOneOccupation}', CaregiverOneWorkPhone = '${student.CaregiverOneWorkPhone}', CaregiverOneEmail = '${student.CaregiverOneEmail}', CaregiverTwoRelationship = '${student.CaregiverTwoRelationship}', CaregiverTwoName = '${student.CaregiverTwoName}', CaregiverTwoAddress = '${student.CaregiverTwoAddress}', CaregiverTwoHomePhone = '${student.CaregiverTwoHomePhone}', CaregiverTwoMobilePhone = '${student.CaregiverTwoMobilePhone}', CaregiverTwoOccupation = '${student.CaregiverTwoOccupation}', CaregiverTwoWorkPhone = '${student.CaregiverTwoWorkPhone}', CaregiverTwoEmail = '${student.CaregiverTwoEmail}', EmergencyContactRelationship = '${student.EmergencyContactRelationship}', EmergencyContactName = '${student.EmergencyContactName}', EmergencyContactAddress = '${student.EmergencyContactAddress}', EmergencyContactHomePhone = '${student.EmergencyContactHomePhone}', EmergencyContactMobilePhone = '${student.EmergencyContactMobilePhone}', EmergencyContactOccupation = '${student.EmergencyContactOccupation}', EmergencyContactWorkPhone = '${student.EmergencyContactWorkPhone}' where UUID = '${userId}'`, (err, result) => {
+                if(err){ console.log(err); }
+
+                res.send(result);
+            });
+        }
+    } else {
+        res.send(401);
+    }
 });
 
 function isExpired(token): boolean {
