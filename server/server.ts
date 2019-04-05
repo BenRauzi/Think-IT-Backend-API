@@ -68,7 +68,7 @@ app.post('/api/login', cors(), (req, res, next) => {
                 const userID = recordset.recordset[0].UserID;
                 const role = recordset.recordset[0].AccountType;
                 const username = recordset.recordset[0].Username;
-                const jwtToken = sign({userId: userID}, JWT_SECRET, {expiresIn: '300 seconds'});
+                const jwtToken = sign({userId: userID}, JWT_SECRET, {expiresIn: '1800 seconds'});
                 res.json({ token: jwtToken, user: { username, role }});
             } else {
                 res.send({msg: 'Password incorrect'});
@@ -108,7 +108,6 @@ app.post('/api/register', cors(), (req, res, next) => {
             res.json({msg: 'User already exists!'});
         }
     });
-    
 });
 
 app.post('/api/authenticate', cors(), (req, res, next) => {
@@ -176,6 +175,29 @@ app.get('/api/student/names', cors(), async (req, res) => {
     }
 });
 
+app.get('/api/student/details', cors(), async(req, res) => {
+    const authToken = req.headers.authorization;
+    if(!isExpired(authToken)){
+        if(await isPermitted(authToken, 'Student')){
+            const request = new sql.Request();
+            const token = verify(authToken, JWT_SECRET);
+            const UUID = token.userId;
+            request.query(`select * from StudentDetails WHERE UUID = '${UUID}'`, (err, result) => {
+                if (err) { console.log(err); }
+
+                if(result.rowsAffected !== 0 ){
+                    res.send(result.recordset[0]);
+                } else {
+                    // error
+                }
+            });
+        } else {
+            res.send(401);
+        }
+    } else {
+        res.send(401);
+    }
+});
 app.post('/api/student/details', cors(), async (req, res) => {
     const authToken = req.headers.authorization;
     const userId = req.body.userId;
