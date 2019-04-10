@@ -43,7 +43,6 @@ export class UserController {
                     const userID = user.UserID;
                     const role = user.AccountType;
                     const username = user.Username;
-                    console.log(JWT_SECRET);
                     const jwtToken = sign({userId: userID}, JWT_SECRET, {expiresIn: '1h'});
                     res.json({ token: jwtToken, user: { username, role }});
                 } else {
@@ -66,9 +65,9 @@ export class UserController {
     const role = req.body.role;
     const userId = uuid();
     const request = new sql.Request();
-    request.query(`select * from Users where Username = '${username}'`, (err, recordset) => {
+    request.query(`select * from Users where Username = '${username}' OR Name = '${name}'`, (err, recordset) => {
         if (err) { console.log(err); }
-        if (recordset.rowsAffected[0] === 0) {
+        if (recordset.rowsAffected === 0) {
             // tslint:disable-next-line: max-line-length
             request.query(`insert into Users ("Username", "Name", "Password", "AccountType", "UserID") values ('${username}', '${name}', '${password}', '${role}', '${userId}');`, (err2, result) => {
                 if (err2) { console.log(err2); }
