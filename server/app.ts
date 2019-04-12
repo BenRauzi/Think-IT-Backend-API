@@ -27,10 +27,11 @@ class App {
 
     private initializeServer() {
         const config = {
-            user: 'root',
-            password: 'Oofman1',
-            server: '104.153.109.42',
-            database: 'Project Thing'
+            user: 'thinkitadmin',
+            password: 'Jufo9295',
+            server: 'thinkitccs.database.windows.net',
+            database: 'ThinkIT',
+            encrypt: true
         };
         sql.connect(config, (err) => {
             if (err) { console.log(err); }
