@@ -5,6 +5,8 @@ import { sign, verify } from 'jsonwebtoken';
 import { User } from '../models';
 import { AuthService } from '../services';
 import * as uuid from 'uuid';
+import { __asyncGenerator } from 'tslib';
+import { async } from 'q';
 
 declare const JWT_SECRET;
 
@@ -23,6 +25,8 @@ export class UserController {
         this.router.post('/login', this.login);
         this.router.get('/getuser', this.getUserByToken);
         this.router.post('/register', this.register);
+        this.router.get('/profileimage', this.getProfileImage);
+        this.router.put('/profileimage', this.updateProfileImage);
     }
 
     getUserByToken = async (req, res) => {
@@ -87,6 +91,29 @@ export class UserController {
             res.json({msg: 'User already exists!'});
         }
     });
+    }
+
+    getProfileImage = async(req, res) => {
+        const authToken = req.headers.authorization;
+        const user = await this.auth.getUserByToken(authToken);
+        const request = new sql.Request();
+        request.query(`SELECT ProfileImage FROM Users WHERE UserID = '${user.UserID}'`, (err, result) => {
+            if(err){ console.log(err); }
+
+            res.json({image: `${result.recordset[0].ProfileImage}`});
+        })
+    }
+
+    updateProfileImage =  async (req, res) => {
+        const authToken = req.headers.authorization;
+        const imageDetails = req.body.image;
+        const user = await this.auth.getUserByToken(authToken);
+        const request = new sql.Request();
+        request.query(`UPDATE Users set ProfileImage = '${imageDetails}' WHERE UserID = '${user.UserID}'`, (err, result) => {
+            if (err) { console.log(err); }
+            
+            res.send(result);
+        });
     }
 
 }
