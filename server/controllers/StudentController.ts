@@ -25,7 +25,7 @@ export class StudentController {
     getStudentNames = async (req, res) => {
         const authToken = req.headers.authorization;
         if (!this.auth.isExpired(authToken)) {
-            if (await this.auth.isPermitted(authToken, 'Administrator')) {
+            if (await this.auth.isPermitted(authToken, 'Teacher')) {
                 const request = new sql.Request();
                 request.query(`SELECT Name, UserID FROM Users WHERE AccountType = 'Student'`, (err, result) => {
                     if (err) { console.log(err); }
