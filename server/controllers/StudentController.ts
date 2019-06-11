@@ -37,6 +37,21 @@ export class StudentController {
         }
     }
 
+    getStudentInfo = async (req, res) => {
+        const authToken = req.headers.authorization;
+        if (!this.auth.isExpired(authToken)) {
+            if (await this.auth.isPermitted(authToken, 'Teacher')) {
+                const request = new sql.Request();
+                request.query(`SELECT Name, UserID FROM studentInfo WHERE AccountType = 'Student'`, (err, result) => {
+                    if (err) { console.log(err); }
+                    res.send(result.recordset);
+                });
+            }
+        } else {
+            res.send(401);
+        }
+    }
+
     getStudentDetailsAsStudent = async (req, res) => {
         const authToken = req.headers.authorization;
         if (!this.auth.isExpired(authToken)) {
