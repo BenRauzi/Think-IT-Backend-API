@@ -43,7 +43,7 @@ export class StudentController {
         if (!this.auth.isExpired(authToken)) {
             if (await this.auth.isPermitted(authToken, 'Teacher')) {
                 const request = new sql.Request();
-                request.query(`SELECT FirstName, LastNames, Sex, HomeRoom FROM StudentInfo WHERE AccountType = 'Student'`, (err, result) => {
+                request.query(`SELECT FirstName, LastName FROM StudentInfo`, (err, result) => {
                     if (err) { console.log(err); }
                     res.send(result.recordset);
                 });
