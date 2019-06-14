@@ -3,7 +3,15 @@ export class Student{
     ForeNames: string;
     LastName: string;
     DateOfBirth: string;
+    Sex: string;
+    YearGroup: string;
     NSN: string;
+    LevelOneCredits: string;
+    LevelTwoCredits: string;
+    LevelThreeCredits: string;
+    Subjects: string;
+    TimeTableID: string;
+    HomeRoom: string;
     HomePhone: string;
     PhysicalUnitNo: string;
     PhysicalNumber: string;
