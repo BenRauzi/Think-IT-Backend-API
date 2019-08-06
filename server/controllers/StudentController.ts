@@ -21,6 +21,7 @@ export class StudentController {
         this.router.get('/student/details', this.getStudentDetailsAsStudent);
         this.router.post('/student/details', this.getStudentDetailsAsAdmin);
         this.router.put('/student/details', this.replaceStudentDetails);
+        this.router.get('/student/credits/totals', this.getNCEACreditAmounts);
     }
 
     getStudentNames = async (req, res) => {
@@ -110,6 +111,32 @@ export class StudentController {
             }
         } else {
             res.send(401);
+        }
+    }
+
+    getNCEACreditAmounts = async (req, res) => {
+        const authToken = req.headers.authorization;
+        const user = await this.auth.getUserByToken(authToken);
+        if (!this.auth.isExpired(authToken)) {
+            if (await this.auth.isPermitted(authToken, 'Student')) {
+                const request = new sql.Request();
+                // tslint:disable-next-line: max-line-length
+                request.query(`SELECT LevelOneNotAchieved, LevelOneAchieved, LevelOneMerit, LevelOneExcellence, LevelTwoNotAchieved, LevelTwoAchieved, LevelTwoMerit, LevelTwoExcellence, LevelThreeNotAchieved, LevelThreeAchieved, LevelThreeMerit, LevelThreeExcellence FROM StudentInfo WHERE uuid = '${user.UserID}'`, (err, result) => {
+                    if (err) { console.log(err); }
+
+                    if(result.recordset.length === 1){
+                        const recordset = result.recordset[0];
+                        const notachieved = recordset.LevelOneNotAchieved + recordset.LevelTwoNotAchieved + recordset.LevelThreeNotAchieved;
+                        const achieved = recordset.LevelOneAchieved + recordset.LevelTwoAchieved + recordset.LevelThreeAchieved;
+                        const merit = recordset.LevelOneMerit + recordset.LevelTwoMerit + recordset.LevelThreeMerit;
+                        const excellence = recordset.LevelOneExcellence + recordset.LevelTwoExcellence + recordset.LevelThreeExcellence;
+                        res.send({notachieved, achieved, merit, excellence});
+                    } else {
+                        res.send(result);
+                    }
+                });
+                // res.send({excellence: 6, merit: 5, achieved: 4, notachieved: 3});
+            }
         }
     }
 }

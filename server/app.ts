@@ -2,15 +2,19 @@ import * as express from 'express';
 import * as cors from 'cors';
 import * as bodyParser from 'body-parser';
 import * as sql from 'mssql';
+import { InitService } from './services';
 
 class App {
 
     public app: express.Application;
     public port: number;
+    public init: InitService;
 
     constructor(controllers: Array<any>, port: number) {
         this.app = express();
         this.port = port;
+
+        this.init = new InitService();
 
         this.initializeMiddleware();
         this.initializeServer();
@@ -35,6 +39,8 @@ class App {
         };
         sql.connect(config, (err) => {
             if (err) { console.log(err); }
+
+            this.init.noticesTimeout();
         });
     }
 

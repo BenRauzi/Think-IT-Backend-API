@@ -84,6 +84,13 @@ export class UserController {
                         console.log(result2);
 
                     });
+
+                    const request3 = new sql.Request();
+                    // tslint:disable-next-line: max-line-length
+                    request3.query(`insert into StudentInfo ("LevelOneNotAchieved", "LevelOneAchieved", "LevelOneMerit", "LevelOneExcellence", "LevelTwoNotAchieved", "LevelTwoAchieved", "LevelTwoMerit", "LevelTwoExcellence", "LevelThreeNotAchieved", "LevelThreeAchieved", "LevelThreeMerit", "LevelThreeExcellence", "uuid") values ('${0}', '${0}', '${0}', '${0}', '${0}', '${0}', '${0}', '${0}', '${0}', '${0}', '${0}', '${0}', '${userId}')`, (err4, result3) => {
+                        if(err4) { console.log(err4); }
+                        console.log(result3);
+                    });
                 }
                 res.json({msg: 'Register Successful'});
             });

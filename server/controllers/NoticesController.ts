@@ -26,11 +26,21 @@ export class NoticesController {
                 const id = uuid();
                 const title = req.body.title;
                 const information = req.body.information;
+                const enddate = req.body.enddate;
                 const user = await this.auth.getUserByToken(authToken);
                 const teacher = user.Name;
                 // tslint:disable-next-line: max-line-length
-                request.query(`insert into Notices(id, title, information, teacher) values('${id}','${title}','${information}','${teacher}')`, (err, result) => {
+                request.query(`insert into Notices(id, title, information, teacher, enddate) values('${id}','${title}','${information}','${teacher}', '${enddate}')`, (err, result) => {
                     if (err) { console.log(err); }
+
+                    if (enddate !== undefined) {
+                        setTimeout(() => {
+                            new sql.Request().query(`DELETE FROM Notices WHERE enddate='${enddate}'`, (err2, result2) => {
+                                if(err2) { console.log(err2); }
+
+                            });
+                        }, (new Date(enddate).getTime() - new Date().getTime()));
+                    }
 
                     res.json({msg: 'Notice Created'});
                 });
