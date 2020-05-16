@@ -14,8 +14,8 @@ export class LFGRequestsController {
 
     public intializeRoutes() {
         //not sure what /notices does yet
-        this.router.post('/notices', this.addLFGRequest);
-        this.router.get('/notices', this.getLFGRequests);
+        this.router.post('/lfgRequests', this.addLFGRequest);
+        this.router.get('/lfgRequests', this.getLFGRequests);
     }
 
     addLFGRequest = async (req, res) => {
@@ -27,6 +27,27 @@ export class LFGRequestsController {
         //const enddate = req.body.enddate;
         //const user = await this.auth.getUserByToken(authToken);
         //const teacher = user.Name;
+
+        const riotID = req.body.riotID;
+        const playersNeeded = req.body.playersNeeded;
+        const language = req.body.language;
+        const needMic = req.body.needMic;
+        const enddate = req.body.enddate;
+
+        sqlRequest.query(`insert into LFGRequests( RiotID, PlayersNeeded, teacher, enddate) values('${riotID}','${playersNeeded}','${language}','${needMic}', '${enddate}')`, (err, result) => {
+            if (err) { console.log(err); }
+
+            if (enddate !== undefined) {
+                setTimeout(() => {
+                    new sql.Request().query(`DELETE FROM LFGRequests WHERE enddate='${enddate}'`, (err2, result2) => {
+                        if(err2) { console.log(err2); }
+
+                    });
+                }, (new Date(enddate).getTime() - new Date().getTime()));
+            }
+
+            res.json({msg: 'LFG Post Created'});
+        });
     }
 
 

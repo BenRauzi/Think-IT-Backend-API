@@ -39,8 +39,9 @@ class App {
         };
         sql.connect(config, (err) => {
             if (err) { console.log(err); }
-
-            this.init.noticesTimeout();
+            
+            this.init.lfgRequestsTimeout();
+            //this.init.noticesTimeout();
         });
     }
 
