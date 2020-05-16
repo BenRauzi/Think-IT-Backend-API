@@ -1,6 +1,6 @@
 import * as express from 'express';
 import * as sql from 'mssql';
-import { AuthService } from '../services';
+//import { AuthService } from '../services';
 import * as uuid from 'uuid';
 
 export class LFGRequestsController {
@@ -34,12 +34,12 @@ export class LFGRequestsController {
         const needMic = req.body.needMic;
         const enddate = req.body.enddate;
 
-        sqlRequest.query(`insert into LFGRequests( RiotID, PlayersNeeded, teacher, enddate) values('${riotID}','${playersNeeded}','${language}','${needMic}', '${enddate}')`, (err, result) => {
+        sqlRequest.query(`insert into lfgrequests( RiotID, PlayersNeeded, Language, enddate) values('${riotID}','${playersNeeded}','${language}','${needMic}', '${enddate}')`, (err, result) => {
             if (err) { console.log(err); }
 
             if (enddate !== undefined) {
                 setTimeout(() => {
-                    new sql.Request().query(`DELETE FROM LFGRequests WHERE enddate='${enddate}'`, (err2, result2) => {
+                    new sql.Request().query(`DELETE FROM lfgrequests WHERE enddate='${enddate}'`, (err2, result2) => {
                         if(err2) { console.log(err2); }
 
                     });
@@ -55,7 +55,7 @@ export class LFGRequestsController {
     //grab all from database
     getLFGRequests = async (req, res) => {
         const request = new sql.Request();
-        request.query(`select * from Notices`, (err, result) => {
+        request.query(`select * from lfgrequests`, (err, result) => {
             if (err) { console.log(err); }
             res.send(result.recordset);
         });

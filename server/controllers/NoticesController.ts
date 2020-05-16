@@ -1,14 +1,14 @@
 import * as express from 'express';
-import * as sql from 'mssql';
-import { AuthService } from '../services';
+import * as sql from 'mysql';
+/*import { AuthService } from '../services';
 import * as uuid from 'uuid';
 
 export class NoticesController {
     public router = express.Router();
-    private auth: AuthService;
+    //private auth: AuthService;
     constructor() {
         this.intializeRoutes();
-        this.auth = new AuthService();
+        //this.auth = new AuthService();
     }
 
     public intializeRoutes() {
@@ -18,7 +18,7 @@ export class NoticesController {
 
     addNotice = async (req, res) => {
         const authToken = req.headers.authorization;
-        if (this.auth.isExpired(authToken)) {
+       // if (this.auth.isExpired(authToken)) {
         res.send(401);
         } else {
             if (await this.auth.isPermitted(authToken, 'Teacher')) {
@@ -58,4 +58,4 @@ export class NoticesController {
         });
     }
 
-}
+}*/
