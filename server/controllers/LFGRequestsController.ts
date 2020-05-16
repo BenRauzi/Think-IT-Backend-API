@@ -34,7 +34,7 @@ export class LFGRequestsController {
         const needMic = req.body.needMic;
         const enddate = req.body.enddate;
 
-        sqlRequest.query(`insert into lfgrequests( RiotID, PlayersNeeded, Language, enddate) values('${riotID}','${playersNeeded}','${language}','${needMic}', '${enddate}')`, (err, result) => {
+        sqlRequest.query(`insert into lfgrequests( RiotID, PlayersNeeded, Language, NeedMic, enddate) values('${riotID}','${playersNeeded}','${language}','${needMic}', '${enddate}')`, (err, result) => {
             if (err) { console.log(err); }
 
             if (enddate !== undefined) {
