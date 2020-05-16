@@ -8,6 +8,6 @@ const app = new App(
         new StudentController()
     ],
     3000,
-);
+);console.log("serverscript run")
 
 app.listen();

@@ -1,7 +1,7 @@
 export class Notice{
-    id: string;
-    title: string;
-    information: string;
-    teacher: string;
+    RiotID: string;
+    PlayersNeeded: string;
+    Language: string;
+    NeedMic: string;
     enddate: string;
 }

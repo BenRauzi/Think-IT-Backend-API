@@ -8,14 +8,15 @@ export class InitService{
 
     public async noticesTimeout(){
         const request = new sql.Request();
-        request.query(`SELECT * FROM Notices`, (err, result) => {
+        request.query(`SELECT * FROM lfgrequests`, (err, result) => {
+            console.log(result);
             const recordset: Notice[] = result.recordset;
             if (err) { console.log(err); }
 
             for (const record of recordset) {
                 if (record.enddate !== null) {
                     setTimeout(() => {
-                        new sql.Request().query(`DELETE FROM Notices WHERE enddate='${record.enddate}'`, (err2, result2) => {
+                        new sql.Request().query(`DELETE FROM lfgrequests WHERE enddate='${record.enddate}'`, (err2, result2) => {
                             if (err2) { console.log(err2); }
 
                             console.log(result2);

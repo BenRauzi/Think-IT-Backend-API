@@ -27,14 +27,15 @@ class App {
         this.app.use(cors({
             origin: 'http://localhost:4200'
         }));
+        console.log("setup origin: http://localhost:4200")
     }
 
     private initializeServer() {
         const config = {
-            user: 'thinkitadmin',
-            password: 'Jufo9295',
-            server: 'thinkitccs.database.windows.net',
-            database: 'ThinkIT',
+            user: 'SwishAdmin',
+            password: 'Windyrain1',
+            server: 'swishblaqstudioserver.database.windows.net',
+            database: 'ValorantLFG',
             encrypt: true
         };
         sql.connect(config, (err) => {
