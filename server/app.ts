@@ -31,9 +31,9 @@ class App {
 
     private initializeServer() {
         const config = {
-            user: 'MCAdmin',
-            password: 'Doofus2',
-            server: 'win2k16-mcdmz',
+            user: 'SwishAdmin',
+            password: 'Windyrain1',
+            server: 'swishblaqstudioserver.database.windows.net',
             database: 'ValorantLFG',
             encrypt: true
         };
