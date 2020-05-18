@@ -28,27 +28,18 @@ export class NoticesController {
         const Activity = req.body.Activity;
         const Language = req.body.Language;
         const NeedMic = req.body.NeedMic;
-        const enddate = req.body.enddate;
         const PNeeded = Number(req.body.PlayersNeeded) -1 ;
         const PlayersNeededs = String(PNeeded);
         request.query(`DELETE FROM lfgrequests WHERE CONVERT (VARCHAR, RiotID)='${RiotID}'`, (err, result) =>{
             if (err) { console.log(err); }
             if(PNeeded !== 0 ){
                 console.log("Minusing 1")
-                request.query(`insert into lfgrequests(RiotID, PlayersNeeded, Activity, Language, NeedMic, enddate) values('${RiotID}','${PlayersNeededs}','${Activity}','${Language}','${NeedMic}', '${enddate}')`, (err, result) => {
+                request.query(`insert into lfgrequests(RiotID, PlayersNeeded, Activity, Language, NeedMic) values('${RiotID}','${PlayersNeededs}','${Activity}','${Language}','${NeedMic}')`, (err, result) => {
                 if (err) { console.log(err); }
                 });
             }
             else{
                 console.log("team Full");
-            }
-            if (enddate !== undefined) {
-                setTimeout(() => {
-                    new sql.Request().query(`DELETE FROM lfgrequests WHERE enddate='${enddate}'`, (err2, result2) => {
-                        if(err2) { console.log(err2); }
-
-                    });
-                }, (new Date(enddate).getTime() - new Date().getTime()));
             }
 
             res.json({msg: 'Notice Created'});
