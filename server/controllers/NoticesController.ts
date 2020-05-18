@@ -16,7 +16,33 @@ export class NoticesController {
     public intializeRoutes() {
         this.router.post('/notices', this.addNotice);
         this.router.get('/notices', this.getNotices);
+        this.router.post('/playerjoined', this.playerJoined);
         console.log("InitializedRoutes '/notices'")
+    }
+
+    playerJoined =async (req, res) =>{
+        const request = new sql.Request();
+        console.log("player has joined a team!")
+        const RiotID = req.body.RiotID;
+        const PlayersNeeded = req.body.PlayersNeeded;
+        const Activity = req.body.Activity;
+        const Language = req.body.Language;
+        const NeedMic = req.body.NeedMic;
+        const enddate = req.body.enddate;
+        request.query(`DELETE FROM lfgrequest WHERE RiotID='${RiotID}'`, (err, result) =>{
+            if (err) { console.log(err); }
+
+            if (enddate !== undefined) {
+                setTimeout(() => {
+                    new sql.Request().query(`DELETE FROM lfgrequests WHERE enddate='${enddate}'`, (err2, result2) => {
+                        if(err2) { console.log(err2); }
+
+                    });
+                }, (new Date(enddate).getTime() - new Date().getTime()));
+            }
+
+            res.json({msg: 'Notice Created'});
+        });
     }
 
     addNotice = async (req, res) => {
@@ -24,11 +50,12 @@ export class NoticesController {
         const request = new sql.Request();
         const RiotID = req.body.RiotID;
         const PlayersNeeded = req.body.PlayersNeeded;
+        const Activity = req.body.Activity;
         const Language = req.body.Language;
         const NeedMic = req.body.NeedMic;
         const enddate = req.body.enddate;
         // tslint:disable-next-line: max-line-length
-        request.query(`insert into lfgrequests(RiotID, PlayersNeeded, Language, NeedMic, enddate) values('${RiotID}','${PlayersNeeded}','${Language}','${NeedMic}', '${enddate}')`, (err, result) => {
+        request.query(`insert into lfgrequests(RiotID, PlayersNeeded, Activity, Language, NeedMic, enddate) values('${RiotID}','${PlayersNeeded}','${Activity}','${Language}','${NeedMic}', '${enddate}')`, (err, result) => {
             if (err) { console.log(err); }
 
             if (enddate !== undefined) {
