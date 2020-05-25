@@ -121,8 +121,10 @@ var App = /** @class */ (function () {
     App.prototype.initializeMiddleware = function () {
         this.app.use(body_parser__WEBPACK_IMPORTED_MODULE_2__["urlencoded"]({ extended: true }));
         this.app.use(body_parser__WEBPACK_IMPORTED_MODULE_2__["json"]());
-        this.app.use(cors__WEBPACK_IMPORTED_MODULE_1__());
-        console.log("setup origin: http://localhost:4200");
+        this.app.use(cors__WEBPACK_IMPORTED_MODULE_1__({
+            origin: 'https://valorantlfg.azurewebsites.net/'
+        }));
+        console.log("setup origin: valorantlfg.azurewebsites.net");
     };
     App.prototype.initializeServer = function () {
         var _this = this;
