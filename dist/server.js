@@ -121,9 +121,7 @@ var App = /** @class */ (function () {
     App.prototype.initializeMiddleware = function () {
         this.app.use(body_parser__WEBPACK_IMPORTED_MODULE_2__["urlencoded"]({ extended: true }));
         this.app.use(body_parser__WEBPACK_IMPORTED_MODULE_2__["json"]());
-        this.app.use(cors__WEBPACK_IMPORTED_MODULE_1__({
-            origin: 'http://localhost:4200'
-        }));
+        this.app.use(cors__WEBPACK_IMPORTED_MODULE_1__());
         console.log("setup origin: http://localhost:4200");
     };
     App.prototype.initializeServer = function () {

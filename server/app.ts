@@ -24,9 +24,7 @@ class App {
     private initializeMiddleware() {
         this.app.use(bodyParser.urlencoded({extended: true}));
         this.app.use(bodyParser.json());
-        this.app.use(cors({
-            origin: 'http://localhost:4200'
-        }));
+        this.app.use(cors());
         console.log("setup origin: http://localhost:4200")
     }
 
