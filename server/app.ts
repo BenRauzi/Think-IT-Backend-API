@@ -24,10 +24,7 @@ class App {
     private initializeMiddleware() {
         this.app.use(bodyParser.urlencoded({extended: true}));
         this.app.use(bodyParser.json());
-        this.app.use(cors({
-            origin: 'https://valorantlfg.azurewebsites.net/'
-        }));
-        console.log("setup origin: valorantlfg.azurewebsites.net")
+        this.app.use(cors());
     }
 
     private initializeServer() {
